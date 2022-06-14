@@ -1,7 +1,14 @@
 import { expectType } from "tsd";
 
 // IMPLEMENT THIS TYPE
-export type WrapForPenpal<T> = any;
+
+export type WrapForPenpal<T> = {
+  [K in keyof T] : T[K] extends {(...arg: infer Args): infer R} 
+  ? R extends Promise<any> 
+    ? (...arg: Args) => R // R is already a promise
+    : (...arg: Args) => Promise<R> // R needs to be wrapped
+  : T[K];
+}
 
 /**
  * Test Scenario - Do not change anything below this line
